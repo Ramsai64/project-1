@@ -1,51 +1,56 @@
-# project-1:
-# 💰 Expense Tracker Web App
+# Project 1: Expense Tracker Web App
 
-A responsive, interactive web-based application to help users **track their income, expenses, and savings**. This app is built using only **HTML, CSS, and JavaScript** with `localStorage` for data persistence.
+A responsive and interactive web-based application that helps users track their income, expenses, and savings. This app is built using HTML, CSS, and JavaScript, and it uses `localStorage` to persist data across sessions without a backend.
 
-## 🔗 Live Pages
+## Live Pages
 
-- `index.html` – Login & Register
-- `welcome.html` – Welcome page after login
-- `home.html` – Dashboard with navigation
-  - `income.html` – Add and view incomes
-  - `expense.html` – Add, edit, delete, and filter expenses
-  - `saving.html` – View savings with pie chart visualization
-
----
-
-## ✨ Features
-
-- 🔐 **Authentication System** (localStorage based)
-  - User registration and login
-- 👤 **Welcome Page**
-  - Personalized greeting using localStorage
-- 📈 **Income Tracker**
-  - Record income entries by type (Day, Month, Year)
-- 💸 **Expense Tracker**
-  - Log expenses with date, category, and description
-  - Edit/delete entries
-  - Filter by category
-- 🏦 **Savings Dashboard**
-  - Visual summary of income, expenses, and savings
-  - Pie chart visualization using Chart.js
+- `index.html` – Login and Register page
+- `welcome.html` – Personalized welcome screen after login
+- `home.html` – Dashboard with navigation to:
+  - `income.html` – Income management
+  - `expense.html` – Expense tracking with edit and filter features
+  - `saving.html` – Savings summary with pie chart
 
 ---
 
-## 🧠 Technologies Used
+## Features
 
-- **HTML5 & CSS3**
-- **Vanilla JavaScript**
-- **Chart.js** (via CDN)
-- **localStorage** for persistent data across sessions
-- **Responsive design** for desktop and mobile devices
+- Authentication System (localStorage based)  
+  Allows user registration and login without a backend.
+
+- Welcome Page  
+  Displays a personalized greeting using stored user data.
+
+- Income Tracker  
+  Add and view income entries by type (daily, monthly, yearly).
+
+- Expense Tracker  
+  Add, edit, delete, and filter expenses by category or date.
+
+- Savings Dashboard  
+  Shows a visual summary of income vs. expenses with a pie chart.
 
 ---
 
-## 🛠️ Getting Started
+## Technologies Used
 
-### 1. Clone the repository
+- HTML5 and CSS3  
+  For layout, structure, and responsive design.
 
-```bash
-git clone https://github.com/your-username/expense-tracker.git
-cd expense-tracker
+- Vanilla JavaScript  
+  Handles interactivity, logic, and data manipulation.
+
+- Chart.js (via CDN)  
+  Used for visualizing savings as a pie chart.
+
+- LocalStorage  
+  Ensures data persistence across sessions without requiring a server.
+
+---
+
+## Getting Started
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/expense-tracker.git
+   cd expense-tracker

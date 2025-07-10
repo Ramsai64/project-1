@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Expense Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f8;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #2c3e50;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background 0.3s, color 0.3s;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        nav a:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            height: 550px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            nav a {
+                margin: 10px 0;
+                width: 80%;
+                text-align: center;
+            }
+
+            iframe {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>💰 Expense Tracker Dashboard</h1>
+
+    <nav>
+        <a href="#" onclick="loadPage('income.html')">Income</a>
+        <a href="#" onclick="loadPage('expense.html')">Expense</a>
+        <a href="#" onclick="loadPage('saving.html')">Savings</a>
+    </nav>
+
+    <iframe id="contentFrame" src="" title="Expense Tracker Content"></iframe>
+
+    <script>
+        function loadPage(page) {
+            document.getElementById('contentFrame').src = page;
+        }
+    </script>
+
+</body>
+</html>

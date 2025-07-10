@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Savings Pie Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #2c3e50;
+    }
+
+    .totals {
+      margin: 20px auto;
+      font-size: 18px;
+      color: #444;
+    }
+
+    canvas {
+      max-width: 400px;
+      margin: 30px auto;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #16a085;
+    }
+
+    .percentages {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📊 Savings Overview</h1>
+
+  <div class="totals">
+    Total Income: <span id="totalIncome" class="highlight">₹0</span><br>
+    Total Expense: <span id="totalExpense" class="highlight">₹0</span><br>
+    Total Savings: <span id="totalSavings" class="highlight">₹0</span>
+  </div>
+
+  <canvas id="savingsChart"></canvas>
+
+  <div class="percentages" id="percentageBreakdown"></div>
+
+  <script>
+    // Fetch data from localStorage
+    const incomes = JSON.parse(localStorage.getItem('incomes')) || [];
+    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+    const totalIncome = incomes.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+    const totalExpense = expenses.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+    const savings = totalIncome - totalExpense;
+    const total = totalIncome + totalExpense + (savings < 0 ? 0 : savings);
+
+    // Calculate percentages
+    const incomePercent = ((totalIncome / total) * 100).toFixed(1);
+    const expensePercent = ((totalExpense / total) * 100).toFixed(1);
+    const savingsPercent = ((Math.max(0, savings) / total) * 100).toFixed(1);
+
+    // Update UI
+    document.getElementById('totalIncome').textContent = '₹' + totalIncome.toFixed(2);
+    document.getElementById('totalExpense').textContent = '₹' + totalExpense.toFixed(2);
+    document.getElementById('totalSavings').textContent = '₹' + savings.toFixed(2);
+
+    // Show percentage breakdown
+    document.getElementById('percentageBreakdown').innerHTML = `
+      💰 Income: ${incomePercent}% &nbsp; | &nbsp;
+      💸 Expense: ${expensePercent}% &nbsp; | &nbsp;
+      🏦 Savings: ${savingsPercent}%
+    `;
+
+    // Pie Chart
+    const ctx = document.getElementById('savingsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Income', 'Expense', 'Savings'],
+        datasets: [{
+          data: [totalIncome, totalExpense, Math.max(0, savings)],
+          backgroundColor: ['#3498db', '#e74c3c', '#2ecc71']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label;
+                const value = context.parsed;
+                const percent = ((value / total) * 100).toFixed(1);
+                return `${label}: ₹${value.toFixed(2)} (${percent}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

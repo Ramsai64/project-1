@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login & Register</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #ecf0f3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #3498db;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .toggle {
+      margin-top: 10px;
+      text-align: center;
+      cursor: pointer;
+      color: #2980b9;
+    }
+
+    .msg {
+      color: green;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2 id="formTitle">Register</h2>
+
+  <div id="msg" class="msg"></div>
+  <div id="error" class="error"></div>
+
+  <input type="text" id="username" placeholder="Username" required>
+  <input type="password" id="password" placeholder="Password" required>
+
+  <button id="submitBtn">Register</button>
+
+  <div class="toggle" id="toggleForm">Already have an account? Login</div>
+</div>
+
+<script>
+  let isLogin = false;
+  const formTitle = document.getElementById('formTitle');
+  const toggleForm = document.getElementById('toggleForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const msgDiv = document.getElementById('msg');
+  const errDiv = document.getElementById('error');
+
+  toggleForm.addEventListener('click', () => {
+    isLogin = !isLogin;
+    formTitle.innerText = isLogin ? 'Login' : 'Register';
+    submitBtn.innerText = isLogin ? 'Login' : 'Register';
+    toggleForm.innerText = isLogin ? "Don't have an account? Register" : "Already have an account? Login";
+    msgDiv.innerText = '';
+    errDiv.innerText = '';
+  });
+
+  submitBtn.addEventListener('click', () => {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+      errDiv.innerText = 'Please fill in all fields';
+      msgDiv.innerText = '';
+      return;
+    }
+
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+
+    if (isLogin) {
+      const user = users.find(u => u.username === username && u.password === password);
+      if (user) {
+        localStorage.setItem('loggedInUser', username);
+        window.location.href = 'home.html';
+      } else {
+        errDiv.innerText = 'Invalid username or password';
+        msgDiv.innerText = '';
+      }
+    } else {
+      const exists = users.some(u => u.username === username);
+      if (exists) {
+        errDiv.innerText = 'Username already exists';
+        msgDiv.innerText = '';
+      } else {
+        users.push({ username, password });
+        localStorage.setItem('users', JSON.stringify(users));
+        msgDiv.innerText = 'Registration successful. You can now login.';
+        errDiv.innerText = '';
+      }
+    }
+
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+  });
+</script>
+
+</body>
+</html>

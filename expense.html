@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Expense Tracker with Filter</title>
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      padding: 30px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    form, .filter-container {
+      max-width: 600px;
+      margin: 0 auto 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #27ae60;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #1e8449;
+    }
+
+    .expense-list {
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .expense-item {
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .expense-details {
+      flex: 1;
+    }
+
+    .expense-actions button {
+      margin-left: 10px;
+      background: #3498db;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .expense-actions button.delete {
+      background: #e74c3c;
+    }
+
+    .expense-actions button:hover {
+      opacity: 0.9;
+    }
+
+    @media (max-width: 600px) {
+      .expense-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .expense-actions {
+        margin-top: 10px;
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📝 Expense Tracker</h1>
+
+  <form id="expenseForm">
+    <label for="date">Date:</label>
+    <input type="date" id="date" required>
+
+    <label for="description">Description:</label>
+    <input type="text" id="description" required>
+
+    <label for="category">Category:</label>
+    <select id="category" required>
+      <option value="">Select a category</option>
+      <option value="Food">Food</option>
+      <option value="Transportation">Transportation</option>
+      <option value="Utilities">Utilities</option>
+      <option value="Shopping">Shopping</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" required>
+
+    <button type="submit">Add Expense</button>
+  </form>
+
+  <!-- Filter Dropdown -->
+  <div class="filter-container">
+    <label for="filter">Filter by Category:</label>
+    <select id="filter" onchange="filterExpenses()">
+      <option value="All">All Categories</option>
+      <option value="Food">Food</option>
+      <option value="Transportation">Transportation</option>
+      <option value="Utilities">Utilities</option>
+      <option value="Shopping">Shopping</option>
+      <option value="Other">Other</option>
+    </select>
+  </div>
+
+  <!-- Expense List -->
+  <div class="expense-list" id="expenseList"></div>
+
+  <script>
+    const expenseForm = document.getElementById('expenseForm');
+    const expenseList = document.getElementById('expenseList');
+    const filterSelect = document.getElementById('filter');
+
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    let editIndex = -1;
+
+    function renderExpenses(filteredCategory = 'All') {
+      expenseList.innerHTML = '';
+
+      const visibleExpenses = filteredCategory === 'All'
+        ? expenses
+        : expenses.filter(e => e.category === filteredCategory);
+
+      visibleExpenses.forEach((expense, index) => {
+        const div = document.createElement('div');
+        div.className = 'expense-item';
+
+        div.innerHTML = `
+          <div class="expense-details">
+            <strong>${expense.date}</strong> - ${expense.description}<br>
+            <small>${expense.category} | ₹${expense.amount}</small>
+          </div>
+          <div class="expense-actions">
+            <button onclick="editExpense(${index})">Edit</button>
+            <button class="delete" onclick="deleteExpense(${index})">Delete</button>
+          </div>
+        `;
+        expenseList.appendChild(div);
+      });
+    }
+
+    function saveToLocal() {
+      localStorage.setItem('expenses', JSON.stringify(expenses));
+    }
+
+    expenseForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const date = document.getElementById('date').value;
+      const description = document.getElementById('description').value;
+      const category = document.getElementById('category').value;
+      const amount = document.getElementById('amount').value;
+
+      const expenseData = { date, description, category, amount };
+
+      if (editIndex === -1) {
+        expenses.push(expenseData);
+      } else {
+        expenses[editIndex] = expenseData;
+        editIndex = -1;
+      }
+
+      saveToLocal();
+      renderExpenses(filterSelect.value);
+      expenseForm.reset();
+    });
+
+    function deleteExpense(index) {
+      if (confirm('Delete this expense?')) {
+        expenses.splice(index, 1);
+        saveToLocal();
+        renderExpenses(filterSelect.value);
+      }
+    }
+
+    function editExpense(index) {
+      const expense = expenses[index];
+      document.getElementById('date').value = expense.date;
+      document.getElementById('description').value = expense.description;
+      document.getElementById('category').value = expense.category;
+      document.getElementById('amount').value = expense.amount;
+      editIndex = index;
+    }
+
+    function filterExpenses() {
+      renderExpenses(filterSelect.value);
+    }
+
+    // Initial render
+    renderExpenses();
+  </script>
+
+</body>
+</html>
